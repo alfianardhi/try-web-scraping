@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Web Scraping</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <!-- Brand/logo -->
+  <a class="navbar-brand" href="#">Logo</a>
+
+  <!-- Links -->
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/getDatas">Datas</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="container-fluid" style="margin-top:25px; text-align=center">
+  <h2>Scraping Json API</h2>
+  <p></p>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>website</th>
+        <th>Company</th>
+      </tr>
+    </thead>
+    <tbody>
+     {%for user in json_datas%}
+        <tr>
+          <td>{{user['id']}}</td>
+          <td>{{user['name']}}</td>
+          <td>{{user['username']}}</td>
+          <td>{{user['email']}}</td>
+          <td>{{user['address']['street']}} {{user['address']['suite']}} {{user['address']['city']}} {{user['address']['zipcode']}}</td>
+          <td>{{user['phone']}}</td>
+          <td>{{user['website']}}</td>
+          <td>{{user['company']['name']}} {{user['company']['catchPhrase']}} {{user['company']['bs']}}</td>
+        </tr>
+      {%endfor%}
+    </tbody>
+  </table>
+</div>
+<h2>Download a file</h2>
+<p>
+	<a href="{{ url_for('.downloadUsers') }}">Download</a>
+</p>
+</body>
+</html>
