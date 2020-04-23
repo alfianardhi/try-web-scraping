@@ -1,7 +1,9 @@
 import requests
-from flask import Flask, render_template, send_file
+from flask import Flask, render_template, send_file, Response, send_from_directory
 
 app = Flask(__name__)
+
+app.config["CLIENT_CSV"] = "/home/alfian/PycharmProjects/course/try-web-scraping/download"
 
 @app.route('/')
 def home():
@@ -11,12 +13,18 @@ def home():
             json_datas = response.json()
 
             f = open('download/users_data.csv', 'w')
-            f.write('No;Nama\n')
+            f.write('#No;Nama;Username;Email;Address;Phone;Website;Company\n')
             for d in json_datas:
-                tanggal = d['id']
-                value = d['name']
-                print(tanggal, ';', value)
-                f.write('{};{}\n'.format(tanggal, value))
+                id_trx = d['id']
+                name = d['name']
+                usernamess = d['username']
+                email = d['email']
+                address = d['address']['street']+" "+d['address']['suite']+" "+d['address']['city']+" "+d['address']['zipcode']
+                phone = d['phone']
+                website = d['website']
+                company = d['company']['name']+" "+d['company']['catchPhrase']+" "+d['company']['bs']
+                #print(id_trx, ';', name, ';', usernamess, ';', email, ';', address, ';', phone, ';', website, ';', company)
+                f.write('{};{};{};{};{};{};{};{}\n'.format(id_trx, name, usernamess, email, address, phone, website, company))
             f.close()
 
             return render_template('index.html', json_datas=json_datas)
@@ -28,11 +36,14 @@ def home():
 def getDatas():
     return render_template('index.html')
 
-@app.route('/downloadUsers')
-def downloadUsers():
-    path = "../download/users_data.csv"
-    return send_file(path, as_attachment=True)
-
+@app.route('/download_file')
+def download_file():
+    try:
+        return send_from_directory(
+            app.config["CLIENT_CSV"], filename="users_data.csv", as_attachment=True
+        )
+    except FileNotFoundError:
+        print(404)
 
 if __name__ == '__main__':
     app.run(debug=True)
